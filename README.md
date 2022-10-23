@@ -24,11 +24,11 @@
 
     ```
     DB2_DATABASE=bludb
-    DB2_HOSTNAME=9938aec0-8105-433e-8bf9-0fbb7e483086   c1ogj3sd0tgtu0lqde00.databases.appdomain.cloud
+    DB2_HOSTNAME=9938aec0-8105-433e-8bf9-0fbb7e483086c1ogj3sd0tgtu0lqde00.databases.appdomain.cloud
     DB2_PORT=32459
     DB2_USERNAME=xgf82208
     DB2_PASSWORD=jWNdrPVt4ws4QQpe
-    APP_SECRET=188%&6_81^3so6e2-$wb6g5(p-znf$$sv7m    3-4=n7prk6ry
+    APP_SECRET=188%&6_81^3so6e2-$wb6g5(p-znf$$sv7m3-4=n7prk6ry
 
     ```
 
