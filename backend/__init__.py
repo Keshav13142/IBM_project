@@ -32,6 +32,9 @@ def create_app():
 
     from .test_router import test
     app.register_blueprint(test, url_prefix='/api/test')
+    
+    from .user_router import user
+    app.register_blueprint(user, url_prefix='/skills')
 
     # In production serve the index.html page at root
     @app.route("/")
