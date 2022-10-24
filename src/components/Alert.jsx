@@ -87,21 +87,20 @@ const Alert = () => {
 
   useEffect(() => {
     if (showAlert) {
-      setAnimateClasses("opacity-100");
+      setAnimateClasses("opacity-100  mt-5 ");
       setTimeout(() => {
-        setAnimateClasses("opacity-0");
+        setAnimateClasses("opacity-0 mt-0");
         setTimeout(() => {
           setShowAlert(null);
-          setAnimateClasses("opacity-0 h-0");
-        }, 250);
+          setAnimateClasses("opacity-0 h-0 mt-0");
+        }, 10);
       }, showAlert.duration);
     }
   }, [showAlert]);
 
   return (
     <div
-      id="alert-1"
-      className={`transition-all duration-850 ease-in-out flex p-4 rounded-lg max-w-md mx-auto ${animateClasses} ${
+      className={`absolute top-14 left-5 transition-all duration-850 ease-in-out flex p-4 rounded-lg ${animateClasses} ${
         alert_options[showAlert?.type]?.bg
       }`}
       role="alert"
