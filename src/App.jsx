@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import { AppProvider } from "./context/AppContext";
 import Dashboard from "./screens/Dashboard";
 import Login from "./screens/Login";
+import Profile from "./screens/Profile";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </AppProvider>
     </BrowserRouter>
