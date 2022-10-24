@@ -8,6 +8,7 @@ const Profile = () => {
   const [email, setemail] = useState("Dheerajhemachandran@gmai.com")
   const [skill, setskill] = useState("")
   const [skills, setskills] = useState([])
+  const [image, setimage] = useState(null)
 
   const handleChange=(e)=>{
     if(e.target.name=="name")
@@ -35,15 +36,26 @@ const Profile = () => {
     
   }
 
+  
+  const onImageChange = (event) => {
+    if (event.target.files && event.target.files[0]) {
+      let img = event.target.files[0];
+      
+      setimage(URL.createObjectURL(img))
+      
+    }
+  };
+
   return (
     <div className='my-5 lg:my-24 mx-10 lg:mx-60'>
       <div className="text-3xl text-primary font-bold text-center py-5">Profile Details</div>
       <div className='bg-primary w-full h-fit rounded-xl'>
          <form className="flex flex-col py-10" onSubmit={handlesubmit}>
           <div className="flex flex-col mx-auto items-center gap-4 my-10">
-          <img src={profile} className="w-52 h-52 rounded-full" alt="" />
-          <button className="bg-white px-4 py-2 rounded">Upload</button>
-          </div>
+          <div className="mx-10 text-white text-xl">Profile:</div>
+          <img src={image} className="w-52 h-52 rounded-full" alt="" />
+          <input type="file" name="myImage" onChange={onImageChange} />
+         </div>
           <div className="mx-10 text-white text-xl">Name:</div>
           <input
               value={name}
