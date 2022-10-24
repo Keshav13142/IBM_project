@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from "react";
 import { AppContext } from "../context/AppContext";
-import JobCard from "../context/JobCard";
-import Links from "../context/Links";
-import SearchBar from "../context/SearchBar";
+import JobCard from "../components/JobCard";
+import Links from "../components/Links";
+import SearchBar from "../components/SearchBar";
 
 const Dashboard = () => {
   const { user, setUser } = useContext(AppContext);
