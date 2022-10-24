@@ -8,8 +8,20 @@ export const AppProvider = ({ children }) => {
 
   const [user, setUser] = useState(null);
 
+  const [showAlert, setShowAlert] = useState(null);
+
+  useEffect(() => {
+    let temp_user = JSON.parse(localStorage.getItem("user"));
+    if (temp_user) {
+      setUser(temp_user);
+      navigate("/dashboard");
+    } else {
+      navigate("/");
+    }
+  }, []);
+
   return (
-    <AppContext.Provider value={{ user, setUser }}>
+    <AppContext.Provider value={{ user, setUser, showAlert, setShowAlert }}>
       {children}
     </AppContext.Provider>
   );
