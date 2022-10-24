@@ -1,7 +1,12 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AppContext } from "../context/AppContext";
+import { loginUser } from "../proxies/backend_api";
 import { emailRegex } from "../utils/helper";
+
 const Login = () => {
+  const { setShowAlert, setUser } = useContext(AppContext);
+  const navigate = useNavigate();
   const [inputs, setInputs] = useState({
     email: "",
     password: "",
@@ -13,7 +18,6 @@ const Login = () => {
   });
 
   const handleChange = ({ target: { name, value } }) => {
-    console.log(name, value);
     setErrors((prev) => {
       return { ...prev, [name]: "" };
     });
@@ -45,8 +49,17 @@ const Login = () => {
     return status;
   };
 
-  const handleLogin = () => {
-    checkInputErrors();
+  const handleLogin = async () => {
+    if (checkInputErrors()) {
+      const data = await loginUser(inputs);
+      if (data.error) {
+        setShowAlert({ type: "error", message: data.error, duration: 3000 });
+        return;
+      }
+      setUser(data);
+      localStorage.setItem("user", JSON.stringify(data));
+      navigate("/dashboard");
+    }
   };
 
   return (

@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SignUp from "../src/screens/Signup";
+import Alert from "./components/Alert";
 import Navbar from "./components/Navbar";
 import { AppProvider } from "./context/AppContext";
 import Dashboard from "./screens/Dashboard";
@@ -10,6 +11,7 @@ function App() {
     <BrowserRouter>
       <AppProvider>
         <Navbar />
+        <Alert />
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
