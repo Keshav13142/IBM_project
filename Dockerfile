@@ -20,4 +20,4 @@ COPY backend/ ./backend/
 RUN pip install -r ./backend/requirements.txt
 
 EXPOSE 3000
-CMD ["gunicorn", "-b", ":3000", "backend:create_app()"]
+CMD ["gunicorn", "-b", ":5000", "backend:create_app()"]
