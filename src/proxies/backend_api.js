@@ -71,10 +71,29 @@ export const saveUserSkills = async (skills, token) => {
       },
     });
     if (response.ok) {
-      const { skills } = await response.json();
-      return skills;
+      return true;
     } else {
-      return null;
+      return false;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const removeUserSkills = async (skills, token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/user/skills`, {
+      method: "DELETE",
+      body: JSON.stringify({ skills }),
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.ok) {
+      return true;
+    } else {
+      return false;
     }
   } catch (error) {
     console.error(error);
