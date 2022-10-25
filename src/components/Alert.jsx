@@ -100,7 +100,7 @@ const Alert = () => {
 
   return (
     <div
-      className={`absolute top-14 left-5 transition-all duration-850 ease-in-out flex p-4 rounded-lg ${animateClasses} ${
+      className={`absolute top-14 right-5 transition-all duration-850 ease-in-out flex p-4 rounded-lg ${animateClasses} ${
         alert_options[showAlert?.type]?.bg
       }`}
       role="alert"

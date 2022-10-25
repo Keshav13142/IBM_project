@@ -30,10 +30,14 @@ def create_app():
     from .auth_router import auth
     app.register_blueprint(auth, url_prefix='/api/auth')
 
-    from .test_router import test
-    app.register_blueprint(test, url_prefix='/api/test')
+    from .files_router import files
+    app.register_blueprint(files, url_prefix='/api/files')
+
+    from .user_router import user
+    app.register_blueprint(user, url_prefix='/api/user')
 
     # In production serve the index.html page at root
+
     @app.route("/")
     def home():
         return app.send_static_file('index.html')
