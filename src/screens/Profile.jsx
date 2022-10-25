@@ -1,16 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
 import { MdDeleteForever } from "react-icons/md";
 import { AppContext } from "../context/AppContext";
-import { getUserSkills, saveUserSkills } from "../proxies/backend_api";
+import {
+  getUserSkills,
+  removeUserSkills,
+  saveUserSkills,
+} from "../proxies/backend_api";
 
 const Profile = () => {
   const { user, setShowAlert } = useContext(AppContext);
 
   const profile =
     "https://www.ubayaschool.com/wp-content/uploads/2018/02/pexels-photo-672358-1.jpeg";
-  const [name, setname] = useState("dheeraj");
   const [location, setlocation] = useState("India");
-  const [email, setemail] = useState("Dheerajhemachandran@gmai.com");
+  const [email, setemail] = useState("");
   const [skill, setskill] = useState("");
   const [skills, setSkills] = useState([]);
   const [newSkills, setNewSkills] = useState([]);
@@ -18,7 +21,6 @@ const Profile = () => {
   const [image, setimage] = useState(null);
 
   const handleChange = (e) => {
-    if (e.target.name == "name") setname(e.target.value);
     if (e.target.name == "email") setemail(e.target.value);
     if (e.target.name == "location") setlocation(e.target.value);
     if (e.target.name == "skill") setskill(e.target.value);
@@ -35,6 +37,7 @@ const Profile = () => {
   const removeSkills = (skill_name) => {
     setRemovedSkills((prev) => [...prev, skill_name]);
     setSkills((prev) => prev.filter((item) => item !== skill_name));
+    setNewSkills((prev) => prev.filter((item) => item !== skill_name));
   };
 
   const handlesubmit = (e) => {
@@ -50,9 +53,15 @@ const Profile = () => {
   };
 
   const updateProfile = async () => {
-    if (newSkills.length === 0 && removedSkills.length === 0) return;
-    const data = await saveUserSkills(newSkills, user.token);
-    if (data) {
+    let skillsAdded = false,
+      skillsRemoved = false;
+    if (newSkills.length !== 0) {
+      skillsAdded = await saveUserSkills(newSkills, user.token);
+    }
+    if (removeSkills.length !== 0) {
+      skillsRemoved = await removeUserSkills(removedSkills, user.token);
+    }
+    if (skillsAdded || skillsRemoved) {
       setShowAlert({
         type: "success",
         message: "Profile updated!",
@@ -60,14 +69,17 @@ const Profile = () => {
       });
     }
     setNewSkills([]);
+    setRemovedSkills([]);
   };
 
   useEffect(() => {
-    if (user)
+    if (user) {
       (async () => {
         let data = await getUserSkills(user?.token);
         if (data) setSkills(data);
       })();
+      setemail(user.email);
+    }
   }, [user]);
 
   return (
