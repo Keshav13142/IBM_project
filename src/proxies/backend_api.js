@@ -9,8 +9,12 @@ export const loginUser = async (inputs) => {
         "Content-Type": "application/json",
       },
     });
-    const data = await response.json();
-    return data;
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      return null;
+    }
   } catch (error) {
     console.error(error);
   }
@@ -25,8 +29,53 @@ export const registerUser = async (inputs) => {
         "Content-Type": "application/json",
       },
     });
-    const data = await response.json();
-    return data;
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getUserSkills = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/user/skills`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.ok) {
+      const { skills } = await response.json();
+      return skills;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const saveUserSkills = async (skills, token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/user/skills`, {
+      method: "POST",
+      body: JSON.stringify({ skills }),
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.ok) {
+      const { skills } = await response.json();
+      return skills;
+    } else {
+      return null;
+    }
   } catch (error) {
     console.error(error);
   }

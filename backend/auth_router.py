@@ -12,6 +12,10 @@ SIGNUP_FEILDS = ('name', 'email', 'phone_number', 'password')
 
 @auth.route("/login", methods=['POST'])
 def login_user():
+    # Check if all the required feild are present
+    for feild in LOGIN_FEILDS:
+        if not (feild in request.json):
+            return jsonify({"error": f"All feilds are required!"}), 409
     email = request.json['email']
     password = request.json['password']
     sql = f"select * from users where email='{email}'"
