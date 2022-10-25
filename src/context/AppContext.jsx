@@ -1,6 +1,5 @@
 import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getUserSkills } from "../proxies/backend_api";
 
 export const AppContext = createContext();
 
@@ -19,9 +18,6 @@ export const AppProvider = ({ children }) => {
       navigate("/");
     } else {
       setUser(temp_user);
-      (async () => {
-        setSkills(await getUserSkills(temp_user.token));
-      })();
     }
   }, []);
 
