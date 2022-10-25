@@ -5,38 +5,35 @@ import JobCard from "../components/JobCard";
 import SearchBar from "../components/SearchBar";
 import Skill from "../components/Skill";
 import { AppContext } from "../context/AppContext";
+import { getUserSkills } from "../proxies/backend_api";
 
 const Dashboard = () => {
-  const { user, skills } = useContext(AppContext);
-
-  const [skill, setSkill] = useState("");
+  const { user, skills, setSkills } = useContext(AppContext);
 
   const [filterUsingSkills, setFilterUsingSkills] = useState(false);
 
   const [query, setquery] = useState("");
   const [posts, setposts] = useState(null);
-  const id = "10f81306";
-  const key = "3b0ab7037bd1793e5b3d7c9ea9fa1eae";
+  const id = import.meta.env.VITE_ADZUNA_API_ID;
+  const key = import.meta.env.VITE_ADZUNA_API_KEY;
   const baseURL = `http://api.adzuna.com/v1/api/jobs/in/search/1?app_id=${id}&app_key=${key}&results_per_page=15&what=${query}&what_and=${skills.join(
     " "
   )}&&content-type=application/json`;
 
   const baseURL2 = `http://api.adzuna.com/v1/api/jobs/in/search/1?app_id=${id}&app_key=${key}&results_per_page=15&what=${query}&content-type=application/json`;
 
-  // const searchJobs = async () => {
-  //   const { data } = await axios.get(baseURL2);
-  //   setposts(data.results);
-  // };
-
   const searchJobsFromQuery = async () => {
-    console.log("search");
     const { data } = await axios.get(filterUsingSkills ? baseURL : baseURL2);
     setposts(data.results);
   };
 
   useEffect(() => {
-    // if (query && query !== "") searchJobs(baseURL);
-  }, []);
+    if (user) {
+      (async () => {
+        setSkills(await getUserSkills(user.token));
+      })();
+    }
+  }, [user]);
 
   useEffect(() => {
     searchJobsFromQuery();
@@ -50,12 +47,7 @@ const Dashboard = () => {
         </div>
         <ul className="list-none text-gray-200 flex flex-col gap-2">
           {skills.map((skill, ind) => (
-            <Skill
-              skill={skill}
-              key={ind}
-              setSkill={setSkill}
-              checked={filterUsingSkills}
-            />
+            <Skill skill={skill} key={ind} checked={filterUsingSkills} />
           ))}
         </ul>
         <button
