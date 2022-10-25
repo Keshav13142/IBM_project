@@ -1,37 +1,50 @@
 import React, { useContext, useEffect, useState } from "react";
+import { AiOutlineClose } from "react-icons/ai";
+import { BsLinkedin } from "react-icons/bs";
+import { GoMarkGithub } from "react-icons/go";
 import { MdDeleteForever } from "react-icons/md";
+import { RiEdit2Fill } from "react-icons/ri";
+import { TfiTwitterAlt } from "react-icons/tfi";
+import { VscAdd } from "react-icons/vsc";
 import { AppContext } from "../context/AppContext";
 import {
   getUserSkills,
   removeUserSkills,
   saveUserSkills,
+  updateUserDetails,
 } from "../proxies/backend_api";
 
 const Profile = () => {
-  const { user, setShowAlert } = useContext(AppContext);
+  const { user, setShowAlert, setUser } = useContext(AppContext);
 
-  const profile =
-    "https://www.ubayaschool.com/wp-content/uploads/2018/02/pexels-photo-672358-1.jpeg";
-  const [location, setlocation] = useState("India");
-  const [email, setemail] = useState("");
-  const [skill, setskill] = useState("");
+  const [addSkill, setAddSkill] = useState("");
+
   const [skills, setSkills] = useState([]);
-  const [newSkills, setNewSkills] = useState([]);
-  const [removedSkills, setRemovedSkills] = useState([]);
-  const [image, setimage] = useState(null);
 
-  const handleChange = (e) => {
-    if (e.target.name == "email") setemail(e.target.value);
-    if (e.target.name == "location") setlocation(e.target.value);
-    if (e.target.name == "skill") setskill(e.target.value);
+  const [newSkills, setNewSkills] = useState([]);
+
+  const [removedSkills, setRemovedSkills] = useState([]);
+
+  const [isEditingEnabled, setIsEditingEnabled] = useState(false);
+
+  const [userInfo, setUserInfo] = useState({
+    name: "",
+    phone_number: "",
+  });
+
+  const handleUserInfoChange = ({ target: { name, value } }) => {
+    setUserInfo((prev) => ({ ...prev, [name]: value }));
   };
 
   const changeSkills = () => {
-    if (skill !== "" && !skills.includes(skill)) {
-      setNewSkills((prev) => [...prev, skill]);
-      setSkills((prev) => [...prev, skill]);
+    if (
+      addSkill !== "" &&
+      !skills.find((item) => item.toLowerCase() === addSkill.toLowerCase())
+    ) {
+      setNewSkills((prev) => [...prev, addSkill.trim()]);
+      setSkills((prev) => [...prev, addSkill.trim()]);
     }
-    setskill("");
+    setAddSkill("");
   };
 
   const removeSkills = (skill_name) => {
@@ -40,19 +53,7 @@ const Profile = () => {
     setNewSkills((prev) => prev.filter((item) => item !== skill_name));
   };
 
-  const handlesubmit = (e) => {
-    e.preventDefault();
-  };
-
-  const onImageChange = (event) => {
-    if (event.target.files && event.target.files[0]) {
-      let img = event.target.files[0];
-
-      setimage(URL.createObjectURL(img));
-    }
-  };
-
-  const updateProfile = async () => {
+  const updateSkills = async () => {
     let skillsAdded = false,
       skillsRemoved = false;
     if (newSkills.length !== 0) {
@@ -72,146 +73,207 @@ const Profile = () => {
     setRemovedSkills([]);
   };
 
+  const updateUserInfo = async () => {
+    const data = await updateUserDetails(userInfo, user.token);
+    if (data) {
+      setUser((prev) => {
+        prev = { ...prev, name: data.name, phone_number: data.phone_number };
+        localStorage.setItem("user", JSON.stringify(prev));
+        return prev;
+      });
+      setShowAlert({
+        type: "success",
+        message: "Profile updated!",
+        duration: 3000,
+      });
+    }
+    setIsEditingEnabled(false);
+  };
+
   useEffect(() => {
     if (user) {
       (async () => {
         let data = await getUserSkills(user?.token);
         if (data) setSkills(data);
       })();
-      setemail(user.email);
+      setUserInfo({
+        name: user.name,
+        phone_number: user.phone_number,
+      });
     }
   }, [user]);
 
   return (
     <div className="my-5 mx-10">
-      <form className="flex flex-col" onSubmit={handlesubmit}>
-        <div className="flex flex-col mx-auto items-center gap-4">
-          <div className="mx-1 self-start text-xl">Profile:</div>
-          <img
-            src={"avatar.webp"}
-            className="w-[10%] rounded-full"
-            alt="avatar"
-          />
-          <input type="file" name="myImage" onChange={onImageChange} />
-        </div>
-        <div className="mx-10 my-5 text-xl">Name: {user?.name}</div>
-        {/* <input
-          value={name}
-          type="text"
-          name="name"
-          placeholder="change name"
-          className="input mx-10 mb-6 input-bordered input-primary"
-          onChange={handleChange}
-        /> */}
-        {/* <div className="mx-10 text-white text-xl">Location:</div> */}
-        {/* <input
-          value={location}
-          type="text"
-          name="location"
-          placeholder="change India"
-          className="input mx-10 mb-6 input-bordered input-primary"
-          onChange={handleChange}
-        /> */}
-        <div className="mx-10 text-xl">Email:</div>
-        <input
-          value={email}
-          type="email"
-          name="email"
-          placeholder="example@gmail.com"
-          className="input mx-10 mb-6 input-bordered input-primary"
-          onChange={handleChange}
-        />
-
-        <div className="mx-10 text-xl">Skills:</div>
-        <div className="">
-          <input
-            value={skill}
-            type="text"
-            name="skill"
-            placeholder="add skill"
-            onChange={handleChange}
-            className="input mx-10 w-1/2 mb-6 input-bordered input-primary"
-          />
-
-          <button className="btn btn-priamry mb-6" onClick={changeSkills}>
-            +
-          </button>
-          <ul className="mx-10 flex gap-2">
-            {skills?.map((skill, ind) => (
-              <li
-                className="bg-gray-300 rounded w-fit my-2 px-3 py-2 flex gap-2 items-center"
-                key={ind}
-              >
-                {skill}
-                <MdDeleteForever
-                  color="#ff8977"
-                  onClick={() => removeSkills(skill)}
-                  size={20}
-                />
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <button
-          className="btn btn-priamry w-fit mx-10 mt-6"
-          type="button"
-          onClick={updateProfile}
-        >
-          Save
-        </button>
-      </form>
-      {/* <div className="border-2 border-blue-100 w-full h-fit rounded-xl p-5 flex flex-col gap-3">
-        <div className="flex justify-between w-full">
+      <div className="border-2 border-blue-100 w-full h-fit rounded-xl p-5 flex flex-col gap-3">
+        <div className="flex justify-between w-full min-h-[25vh]">
           <div className="flex flex-col justify-between">
-            <h1 className="text-2xl font-medium flex items-center gap-4">
+            <h1 className="md:text-2xl  text-xl font-medium flex items-center gap-4">
               Your Profile{" "}
               <button>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  x="0px"
-                  y="0px"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  style={{ fill: "#000000" }}
-                >
-                  {" "}
-                  <path d="M 18 2 L 15.585938 4.4140625 L 19.585938 8.4140625 L 22 6 L 18 2 z M 14.076172 5.9238281 L 3 17 L 3 21 L 7 21 L 18.076172 9.9238281 L 14.076172 5.9238281 z"></path>
-                </svg>
+                {isEditingEnabled ? (
+                  <AiOutlineClose
+                    color="#ff8977"
+                    onClick={() => setIsEditingEnabled(!isEditingEnabled)}
+                  />
+                ) : (
+                  <RiEdit2Fill
+                    color="#4506cb"
+                    onClick={() => setIsEditingEnabled(!isEditingEnabled)}
+                  />
+                )}
               </button>
             </h1>
-            <div className="flex flex-col gap-2">
-              <h2 className="text-2xl">{user?.name}</h2>
-              <p className="text-xl text-gray-700">{user?.email}</p>
-              <span className="text-gray-700">{user?.phone_number}</span>
+            <div className="flex flex-col gap-3">
+              {isEditingEnabled ? (
+                <>
+                  <input
+                    name="name"
+                    value={userInfo.name}
+                    className="input input-bordered w-full input-xs p-3 text-lg input-primary"
+                    type="text"
+                    placeholder="name"
+                    onChange={handleUserInfoChange}
+                  />
+                  <input
+                    disabled
+                    value={user?.email}
+                    className="input input-bordered w-full input-xs p-3 text-lg input-primary"
+                    type="text"
+                    placeholder="name"
+                  />
+                  <input
+                    name="phone_number"
+                    value={userInfo.phone_number}
+                    className="input input-bordered w-full input-xs p-3 text-lg input-primary"
+                    type="number"
+                    placeholder="phone number"
+                    onChange={handleUserInfoChange}
+                  />
+                  <button
+                    className="btn btn-xs btn-outline btn-primary"
+                    onClick={updateUserInfo}
+                  >
+                    Update
+                  </button>
+                </>
+              ) : (
+                <>
+                  <h2 className="md:text-2xl xl:text-2xl sm:text-xl">
+                    {user?.name}
+                  </h2>
+                  <p className="md:text-xl sm:text-md text-gray-700">
+                    {user?.email}
+                  </p>
+                  <span className="text-gray-700">{user?.phone_number}</span>
+                </>
+              )}
             </div>
           </div>
           <div className="flex flex-col justify-end w-fit gap-4">
             <img
               src="avatar.webp"
               alt="profile"
-              className="w-36 rounded-md object-contain"
+              className="md:w-36 w-20 rounded-md object-contain"
             />
-            <button className="btn btn-outline btn-active">change</button>
+            <button className="btn btn-outline btn-active btn-sm">
+              change
+            </button>
           </div>
         </div>
-        <div className="divider"></div>
-        <div className="">
-          <div className="">
-            <h4>Resume/Portfolio</h4>
+        <div className="divider my-2"></div>
+        <div className="flex flex-col">
+          <div className="flex justify-between gap-2 flex-col">
+            <h4 className="text-xl">Resume/Portfolio</h4>
+            <div className="flex gap-5">
+              <input
+                className="input input-bordered w-full input-primary max-w-xl input-sm"
+                type="text"
+                placeholder="paste the link"
+              />
+              <button className="btn btn-primary btn-sm">update</button>
+            </div>
           </div>
-          <div className="">
-            <h4>Resume/Portfolio</h4>
+          <div className="divider my-2"></div>
+          <div className="flex justify-between gap-2 flex-col">
+            <h4 className="text-xl">Skills</h4>
+            <form
+              className="flex gap-5 items-center"
+              onSubmit={(e) => e.preventDefault()}
+            >
+              <input
+                autoComplete="off"
+                value={addSkill}
+                type="text"
+                name="addSkill"
+                placeholder="add addSkill"
+                onChange={(e) => setAddSkill(e.target.value)}
+                className="input input-bordered w-full input-primary max-w-xl input-sm"
+              />
+
+              <button
+                className="hover:rotate-90 transition-all"
+                onClick={changeSkills}
+              >
+                <VscAdd size={20} />
+              </button>
+            </form>
+            <ul className="flex gap-2 flex-wrap">
+              {skills?.map((addSkill, ind) => (
+                <li
+                  className="bg-indigo-100 rounded p-2 flex gap-2 items-center"
+                  key={ind}
+                >
+                  {addSkill}
+                  <MdDeleteForever
+                    color="#ff8977"
+                    onClick={() => removeSkills(addSkill)}
+                    size={20}
+                  />
+                </li>
+              ))}
+            </ul>
+            <button
+              className="btn btn-sm w-fit btn-primary"
+              type="button"
+              onClick={updateSkills}
+            >
+              Save
+            </button>
           </div>
-          <div className="">
-            <h4>Resume/Portfolio</h4>
-          </div>
-          <div className="">
-            <h4>Resume/Portfolio</h4>
+          <div className="divider my-2"></div>
+          <div className="flex gap-2 flex-col">
+            <h3 className="text-xl">Socials</h3>
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-5 items-center">
+                <GoMarkGithub size={20} />
+                <input
+                  type="text"
+                  placeholder="paste the link"
+                  className="border-2 border-gray-300 rounded-md px-3 my-1 max-w-md"
+                />
+              </div>
+              <div className="flex gap-5 items-center">
+                <BsLinkedin size={20} />
+                <input
+                  type="text"
+                  placeholder="paste the link"
+                  className="border-2 border-gray-300 rounded-md px-3 my-1 max-w-md"
+                />
+              </div>
+              <div className="flex gap-5 items-center">
+                <TfiTwitterAlt size={20} />
+                <input
+                  type="text"
+                  placeholder="paste the link"
+                  className="border-2 border-gray-300 rounded-md px-3 my-1 max-w-md"
+                />
+              </div>
+              <button className="btn btn-primary btn-sm max-w-fit">save</button>
+            </div>
           </div>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };

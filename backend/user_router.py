@@ -71,3 +71,22 @@ def manage_skills(current_user):
             return jsonify({"message": "Deleted skills successfully!"}), 200
         else:
             jsonify({"error": "Something went wrong!!"}), 409
+
+
+@user.route('/profile', methods=["POST"])
+@token_required
+def update_user_info(current_user):
+    user_id = current_user['USER_ID']
+    update_fields = ['name', 'phone_number']
+    for feild in update_fields:
+        if not (feild in request.json):
+            return jsonify({"error": f"All feilds are required!"}), 409
+    name = request.json['name']
+    phone_number = request.json['phone_number']
+    sql = f"update users set name='{name}',phone_number='{phone_number}' where user_id={user_id}"
+    stmt = ibm_db.prepare(conn, sql)
+    status = ibm_db.execute(stmt)
+    if status:
+        return jsonify({"name": name, "phone_number": phone_number}), 200
+    else:
+        jsonify({"error": "Something went wrong!!"}), 409
