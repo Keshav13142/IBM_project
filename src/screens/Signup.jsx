@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { registerUser } from "../proxies/backend_api";
 import { emailRegex } from "../utils/helper";
 const SignUp = () => {
   const [inputs, setInputs] = useState({
@@ -19,7 +20,6 @@ const SignUp = () => {
   });
 
   const handleChange = ({ target: { name, value } }) => {
-    console.log(name, value);
     setErrors((prev) => {
       return { ...prev, [name]: "" };
     });
@@ -79,8 +79,22 @@ const SignUp = () => {
     return status;
   };
 
-  const handleSignUp = () => {
-    checkInputErrors();
+  const handleSignUp = async () => {
+    if (checkInputErrors()) {
+      const data = await registerUser(inputs);
+      if (data.error) {
+        setShowAlert({ type: "error", message: data.error, duration: 3000 });
+        return;
+      }
+      setUser(data);
+      setShowAlert({
+        type: "success",
+        message: `Your journey starts here ${data.name}`,
+        duration: 3000,
+      });
+      localStorage.setItem("user", JSON.stringify(data));
+      navigate("/profile");
+    }
   };
 
   return (

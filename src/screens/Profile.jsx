@@ -1,115 +1,280 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useContext, useEffect, useState } from "react";
+import { AiOutlineClose } from "react-icons/ai";
+import { BsLinkedin } from "react-icons/bs";
+import { GoMarkGithub } from "react-icons/go";
+import { MdDeleteForever } from "react-icons/md";
+import { RiEdit2Fill } from "react-icons/ri";
+import { TfiTwitterAlt } from "react-icons/tfi";
+import { VscAdd } from "react-icons/vsc";
+import { AppContext } from "../context/AppContext";
+import {
+  getUserSkills,
+  removeUserSkills,
+  saveUserSkills,
+  updateUserDetails,
+} from "../proxies/backend_api";
 
 const Profile = () => {
-  const profile="https://www.ubayaschool.com/wp-content/uploads/2018/02/pexels-photo-672358-1.jpeg"
-  const [name, setname] = useState("dheeraj")
-  const [location, setlocation] = useState("India")
-  const [email, setemail] = useState("Dheerajhemachandran@gmai.com")
-  const [skill, setskill] = useState("")
-  const [skills, setskills] = useState([])
-  const [image, setimage] = useState(null)
+  const { user, setShowAlert, setUser, skills, setSkills } =
+    useContext(AppContext);
 
-  const handleChange=(e)=>{
-    if(e.target.name=="name")
-    setname(e.target.value)
-    if(e.target.name=="email")
-    setemail(e.target.value)
-    if(e.target.name=="location")
-    setlocation(e.target.value) 
-    if(e.target.name=="skill")
-    setskill(e.target.value)
-  }
+  const [addSkill, setAddSkill] = useState("");
 
-  const changeSkills=()=>{
-    if(skill!=="")
-    {
-      if(skills.includes(skill)===false)
-      {
-        const newskills=skills.concat(skill)
-        setskills(newskills)
-      }
-    }
-  }
-  const handlesubmit=(e)=>{
-    e.preventDefault()
-    
-  }
+  const [newSkills, setNewSkills] = useState([]);
 
-  
-  const onImageChange = (event) => {
-    if (event.target.files && event.target.files[0]) {
-      let img = event.target.files[0];
-      
-      setimage(URL.createObjectURL(img))
-      
-    }
+  const [removedSkills, setRemovedSkills] = useState([]);
+
+  const [isEditingEnabled, setIsEditingEnabled] = useState(false);
+
+  const [userInfo, setUserInfo] = useState({
+    name: "",
+    phone_number: "",
+  });
+
+  const handleUserInfoChange = ({ target: { name, value } }) => {
+    setUserInfo((prev) => ({ ...prev, [name]: value }));
   };
 
+  const changeSkills = () => {
+    if (
+      addSkill !== "" &&
+      !skills.find((item) => item.toLowerCase() === addSkill.toLowerCase())
+    ) {
+      setNewSkills((prev) => [...prev, addSkill.trim()]);
+      setSkills((prev) => [...prev, addSkill.trim()]);
+    }
+    setAddSkill("");
+  };
+
+  const removeSkills = (skill_name) => {
+    setRemovedSkills((prev) => [...prev, skill_name]);
+    setSkills((prev) => prev.filter((item) => item !== skill_name));
+    setNewSkills((prev) => prev.filter((item) => item !== skill_name));
+  };
+
+  const updateSkills = async () => {
+    let skillsAdded = false,
+      skillsRemoved = false;
+    if (newSkills.length !== 0) {
+      skillsAdded = await saveUserSkills(newSkills, user.token);
+    }
+    if (removeSkills.length !== 0) {
+      skillsRemoved = await removeUserSkills(removedSkills, user.token);
+    }
+    if (skillsAdded || skillsRemoved) {
+      setShowAlert({
+        type: "success",
+        message: "Profile updated!",
+        duration: 3000,
+      });
+    }
+    setNewSkills([]);
+    setRemovedSkills([]);
+  };
+
+  const updateUserInfo = async () => {
+    const data = await updateUserDetails(userInfo, user.token);
+    if (data) {
+      setUser((prev) => {
+        prev = { ...prev, name: data.name, phone_number: data.phone_number };
+        localStorage.setItem("user", JSON.stringify(prev));
+        return prev;
+      });
+      setShowAlert({
+        type: "success",
+        message: "Profile updated!",
+        duration: 3000,
+      });
+    }
+    setIsEditingEnabled(false);
+  };
+
+  useEffect(() => {
+    if (user) {
+      (async () => {
+        let data = await getUserSkills(user?.token);
+        if (data) setSkills(data);
+      })();
+      setUserInfo({
+        name: user.name,
+        phone_number: user.phone_number,
+      });
+    }
+  }, [user]);
+
   return (
-    <div className='my-5 lg:my-24 mx-10 lg:mx-60'>
-      <div className="text-3xl text-primary font-bold text-center py-5">Profile Details</div>
-      <div className='bg-primary w-full h-fit rounded-xl'>
-         <form className="flex flex-col py-10" onSubmit={handlesubmit}>
-          <div className="flex flex-col mx-auto items-center gap-4 my-10">
-          <div className="mx-10 text-white text-xl">Profile:</div>
-          <img src={image} className="w-52 h-52 rounded-full" alt="" />
-          <input type="file" name="myImage" onChange={onImageChange} />
-         </div>
-          <div className="mx-10 text-white text-xl">Name:</div>
-          <input
-              value={name}
-              type="text"
-              name="name"
-              placeholder="change name"
-              className="input mx-10 mb-6 input-bordered input-primary"
-              onChange={handleChange}
+    <div className="my-5 mx-10">
+      <div className="border-2 border-blue-100 w-full h-fit rounded-xl p-5 flex flex-col gap-3">
+        <div className="flex justify-between w-full min-h-[25vh]">
+          <div className="flex flex-col justify-between">
+            <h1 className="md:text-2xl  text-xl font-medium flex items-center gap-4">
+              Your Profile{" "}
+              <button>
+                {isEditingEnabled ? (
+                  <AiOutlineClose
+                    color="#ff8977"
+                    onClick={() => setIsEditingEnabled(!isEditingEnabled)}
+                  />
+                ) : (
+                  <RiEdit2Fill
+                    color="#4506cb"
+                    onClick={() => setIsEditingEnabled(!isEditingEnabled)}
+                  />
+                )}
+              </button>
+            </h1>
+            <div className="flex flex-col gap-3">
+              {isEditingEnabled ? (
+                <>
+                  <input
+                    name="name"
+                    value={userInfo.name}
+                    className="input input-bordered w-full input-xs p-3 text-lg input-primary"
+                    type="text"
+                    placeholder="name"
+                    onChange={handleUserInfoChange}
+                  />
+                  <input
+                    disabled
+                    value={user?.email}
+                    className="input input-bordered w-full input-xs p-3 text-lg input-primary"
+                    type="text"
+                    placeholder="name"
+                  />
+                  <input
+                    name="phone_number"
+                    value={userInfo.phone_number}
+                    className="input input-bordered w-full input-xs p-3 text-lg input-primary"
+                    type="number"
+                    placeholder="phone number"
+                    onChange={handleUserInfoChange}
+                  />
+                  <button
+                    className="btn btn-xs btn-outline btn-primary"
+                    onClick={updateUserInfo}
+                  >
+                    Update
+                  </button>
+                </>
+              ) : (
+                <>
+                  <h2 className="md:text-2xl xl:text-2xl sm:text-xl">
+                    {user?.name}
+                  </h2>
+                  <p className="md:text-xl sm:text-md text-gray-700">
+                    {user?.email}
+                  </p>
+                  <span className="text-gray-700">{user?.phone_number}</span>
+                </>
+              )}
+            </div>
+          </div>
+          <div className="flex flex-col justify-end w-fit gap-4">
+            <img
+              src="avatar.webp"
+              alt="profile"
+              className="md:w-36 w-20 rounded-md object-contain"
             />
-            <div className="mx-10 text-white text-xl">Location:</div>
-            <input
-                value={location}
-                type="text"
-                name="location"
-                placeholder="change India"
-                className="input mx-10 mb-6 input-bordered input-primary"
-                onChange={handleChange}
-              />
-            <div className="mx-10 text-white text-xl">Email:</div>
-            <input
-                value={email}
-                type="email"
-                name="email"
-                placeholder="example@gmail.com"
-                className="input mx-10 mb-6 input-bordered input-primary"
-                onChange={handleChange}
-              />
-
-              <div className="mx-10 text-white text-xl">Skills:</div>    
-              <div className="">
+            {/* <button className="btn btn-outline btn-active btn-sm">
+              change
+            </button> */}
+          </div>
+        </div>
+        <div className="divider my-2"></div>
+        <div className="flex flex-col">
+          <div className="flex justify-between gap-2 flex-col">
+            <h4 className="text-xl">Skills</h4>
+            <form
+              className="flex gap-5 items-center"
+              onSubmit={(e) => e.preventDefault()}
+            >
               <input
+                autoComplete="off"
+                value={addSkill}
                 type="text"
-                name="skill"
-                placeholder="add skill"
-                onChange={handleChange}
-                className="input mx-10 w-1/2 mb-6 input-bordered input-primary"
+                name="addSkill"
+                placeholder="add addSkill"
+                onChange={(e) => setAddSkill(e.target.value)}
+                className="input input-bordered w-full input-primary max-w-xl input-sm"
               />
-              
-              <button className='btn btn-priamry mb-6' onClick={changeSkills}>+</button>
-              <ul className='mx-10 flex gap-2'>
-                {skills.map((skill)=>
-                (<li className="bg-slate-400 rounded w-fit my-2 px-3 py-2">{skill}</li>))}
-                
-              </ul>
-              </div>
 
-              <button className='btn btn-priamry w-fit mx-10 mt-6' type='sumbit'>change</button>
-      
-      </form>
-      
-     
+              <button
+                className="hover:rotate-90 transition-all"
+                onClick={changeSkills}
+              >
+                <VscAdd size={20} />
+              </button>
+            </form>
+            <ul className="flex gap-2 flex-wrap">
+              {skills?.map((addSkill, ind) => (
+                <li
+                  className="bg-indigo-100 rounded p-2 flex gap-2 items-center"
+                  key={ind}
+                >
+                  {addSkill}
+                  <MdDeleteForever
+                    color="#ff8977"
+                    onClick={() => removeSkills(addSkill)}
+                    size={20}
+                  />
+                </li>
+              ))}
+            </ul>
+            <button
+              className="btn btn-sm w-fit btn-primary"
+              type="button"
+              onClick={updateSkills}
+            >
+              Save
+            </button>
+          </div>
+          <div className="divider my-2"></div>
+          <div className="flex justify-between gap-2 flex-col">
+            <h4 className="text-xl">Resume/Portfolio</h4>
+            <div className="flex gap-5">
+              <input
+                className="input input-bordered w-full input-primary max-w-xl input-sm"
+                type="text"
+                placeholder="paste the link"
+              />
+              <button className="btn btn-primary btn-sm">update</button>
+            </div>
+          </div>
+          <div className="divider my-2"></div>
+          <div className="flex gap-2 flex-col">
+            <h3 className="text-xl">Socials</h3>
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-5 items-center">
+                <GoMarkGithub size={20} />
+                <input
+                  type="text"
+                  placeholder="paste the link"
+                  className="border-2 border-gray-300 rounded-md px-3 my-1 max-w-md"
+                />
+              </div>
+              <div className="flex gap-5 items-center">
+                <BsLinkedin size={20} />
+                <input
+                  type="text"
+                  placeholder="paste the link"
+                  className="border-2 border-gray-300 rounded-md px-3 my-1 max-w-md"
+                />
+              </div>
+              <div className="flex gap-5 items-center">
+                <TfiTwitterAlt size={20} />
+                <input
+                  type="text"
+                  placeholder="paste the link"
+                  className="border-2 border-gray-300 rounded-md px-3 my-1 max-w-md"
+                />
+              </div>
+              <button className="btn btn-primary btn-sm max-w-fit">save</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Profile
+export default Profile;
