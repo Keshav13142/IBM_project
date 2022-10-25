@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import JobCard from "../components/JobCard";
 import Links from "../components/Links";
 import SearchBar from "../components/SearchBar";
@@ -6,10 +6,6 @@ import { AppContext } from "../context/AppContext";
 
 const Dashboard = () => {
   const { user } = useContext(AppContext);
-
-  useEffect(() => {
-    console.log(user, "From Dashboard");
-  }, []);
 
   return (
     <div className="flex gap-10 my-10 lg:my-24 mx-20 lg:mx-40">

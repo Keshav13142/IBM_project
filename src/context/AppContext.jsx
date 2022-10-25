@@ -12,11 +12,10 @@ export const AppProvider = ({ children }) => {
 
   useEffect(() => {
     let temp_user = JSON.parse(localStorage.getItem("user"));
-    if (temp_user) {
-      setUser(temp_user);
-      navigate("/dashboard");
-    } else {
+    if (!temp_user) {
       navigate("/");
+    } else {
+      setUser(temp_user);
     }
   }, []);
 
