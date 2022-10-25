@@ -57,6 +57,11 @@ const Login = () => {
         return;
       }
       setUser(data);
+      setShowAlert({
+        type: "success",
+        message: `Welcome back ${data.name}`,
+        duration: 3000,
+      });
       localStorage.setItem("user", JSON.stringify(data));
       navigate("/dashboard");
     }
@@ -70,7 +75,10 @@ const Login = () => {
           <img src={`github-dark.png`} alt="github" width="14%" />
         </button>
         <div className="divider max-w-xs">or</div>
-        <div className="card bg-base-300 rounded-box flex flex-col justify-center items-center gap-5 px-10 py-5 w-fit mx-auto">
+        <form
+          onSubmit={(e) => e.preventDefault()}
+          className="card bg-base-300 rounded-box flex flex-col justify-center items-center gap-5 px-10 py-5 w-fit mx-auto"
+        >
           <div>
             <input
               value={inputs.email}
@@ -103,6 +111,7 @@ const Login = () => {
           </div>
           <div className="text-center">
             <button
+              type="submit"
               onClick={handleLogin}
               className="btn btn-sm btn-primary mb-4"
             >
@@ -115,7 +124,7 @@ const Login = () => {
               </Link>
             </p>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

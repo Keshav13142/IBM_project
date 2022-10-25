@@ -87,6 +87,11 @@ const SignUp = () => {
         return;
       }
       setUser(data);
+      setShowAlert({
+        type: "success",
+        message: `Your journey starts here ${data.name}`,
+        duration: 3000,
+      });
       localStorage.setItem("user", JSON.stringify(data));
       navigate("/profile");
     }
