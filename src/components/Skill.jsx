@@ -1,12 +1,9 @@
 import React from "react";
 import { TiTick } from "react-icons/ti";
 
-const Skill = ({ skill, setSkill, checked }) => {
+const Skill = ({ skill, checked }) => {
   return (
-    <li
-      className="hover:text-white cursor-pointer flex gap-1 items-center"
-      onClick={() => setSkill(skill)}
-    >
+    <li className="hover:text-white cursor-pointer flex gap-1 items-center">
       {skill}
       {checked && <TiTick />}
     </li>
