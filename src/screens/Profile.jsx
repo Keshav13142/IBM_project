@@ -15,11 +15,10 @@ import {
 } from "../proxies/backend_api";
 
 const Profile = () => {
-  const { user, setShowAlert, setUser } = useContext(AppContext);
+  const { user, setShowAlert, setUser, skills, setSkills } =
+    useContext(AppContext);
 
   const [addSkill, setAddSkill] = useState("");
-
-  const [skills, setSkills] = useState([]);
 
   const [newSkills, setNewSkills] = useState([]);
 
@@ -176,25 +175,13 @@ const Profile = () => {
               alt="profile"
               className="md:w-36 w-20 rounded-md object-contain"
             />
-            <button className="btn btn-outline btn-active btn-sm">
+            {/* <button className="btn btn-outline btn-active btn-sm">
               change
-            </button>
+            </button> */}
           </div>
         </div>
         <div className="divider my-2"></div>
         <div className="flex flex-col">
-          <div className="flex justify-between gap-2 flex-col">
-            <h4 className="text-xl">Resume/Portfolio</h4>
-            <div className="flex gap-5">
-              <input
-                className="input input-bordered w-full input-primary max-w-xl input-sm"
-                type="text"
-                placeholder="paste the link"
-              />
-              <button className="btn btn-primary btn-sm">update</button>
-            </div>
-          </div>
-          <div className="divider my-2"></div>
           <div className="flex justify-between gap-2 flex-col">
             <h4 className="text-xl">Skills</h4>
             <form
@@ -240,6 +227,18 @@ const Profile = () => {
             >
               Save
             </button>
+          </div>
+          <div className="divider my-2"></div>
+          <div className="flex justify-between gap-2 flex-col">
+            <h4 className="text-xl">Resume/Portfolio</h4>
+            <div className="flex gap-5">
+              <input
+                className="input input-bordered w-full input-primary max-w-xl input-sm"
+                type="text"
+                placeholder="paste the link"
+              />
+              <button className="btn btn-primary btn-sm">update</button>
+            </div>
           </div>
           <div className="divider my-2"></div>
           <div className="flex gap-2 flex-col">

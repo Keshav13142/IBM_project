@@ -4,10 +4,11 @@ import { AppContext } from "../context/AppContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { user, setUser } = useContext(AppContext);
+  const { user, setUser, setSkills } = useContext(AppContext);
 
   const logout = () => {
     setUser(null);
+    setSkills([]);
     localStorage.removeItem("user");
     navigate("/");
   };
