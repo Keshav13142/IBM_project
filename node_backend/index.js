@@ -6,8 +6,9 @@ const indexRouter = require("./routes/index_router");
 const authRouter = require("./routes/auth_router");
 const skillsRouter = require("./routes/skills_router");
 const { connectToDb } = require("./db_config");
+const asyncHandler = require("express-async-handler");
 
-connectToDb();
+asyncHandler(connectToDb());
 
 const app = express();
 
