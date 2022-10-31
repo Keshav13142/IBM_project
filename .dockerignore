@@ -1,0 +1,18 @@
+node_modules
+/node_modules
+/.pnp
+.pnp.js
+venv
+.flaskenv
+.gitignore
+
+
+
+# misc
+__pycache__
+
+#ohters
+Todo.md
+package-lock.json
+test.html
+README.md
