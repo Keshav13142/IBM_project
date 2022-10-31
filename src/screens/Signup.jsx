@@ -1,8 +1,14 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AppContext } from "../context/AppContext";
 import { registerUser } from "../proxies/backend_api";
 import { emailRegex } from "../utils/helper";
+
 const SignUp = () => {
+  const { setShowAlert, setUser } = useContext(AppContext);
+
+  const navigate = useNavigate();
+
   const [inputs, setInputs] = useState({
     name: "",
     email: "",
@@ -87,6 +93,7 @@ const SignUp = () => {
         return;
       }
       setUser(data);
+      console.log(data);
       setShowAlert({
         type: "success",
         message: `Your journey starts here ${data.name}`,

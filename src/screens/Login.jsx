@@ -6,6 +6,7 @@ import { emailRegex } from "../utils/helper";
 
 const Login = () => {
   const { setShowAlert, setUser } = useContext(AppContext);
+
   const navigate = useNavigate();
   const [inputs, setInputs] = useState({
     email: "",
