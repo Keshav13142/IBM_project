@@ -93,7 +93,6 @@ const SignUp = () => {
         return;
       }
       setUser(data);
-      console.log(data);
       setShowAlert({
         type: "success",
         message: `Your journey starts here ${data.name}`,
