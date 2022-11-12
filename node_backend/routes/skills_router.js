@@ -4,7 +4,6 @@ const {
   getUserSkills,
   postUserSkils,
   deleteUserSkills,
-  updateUserSkills,
 } = require("../controllers/skills_controller");
 
 router
