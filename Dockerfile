@@ -12,7 +12,7 @@ RUN npm run build
 # Build step #2: build the API with the client as static files
 FROM python:3.10
 WORKDIR /app
-COPY --from=react-builder /app/dist ./build
+COPY --from=react-builder /app/dist ./dist
 COPY main.py ./main.py
 
 RUN mkdir ./backend
@@ -20,4 +20,4 @@ COPY backend/ ./backend/
 RUN pip install -r ./backend/requirements.txt
 
 EXPOSE 5000
-CMD ["python","main.py"]
+ENTRYPOINT ["python","main.py"]
