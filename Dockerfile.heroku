@@ -19,5 +19,4 @@ RUN mkdir ./backend
 COPY backend/ ./backend/
 RUN pip install -r ./backend/requirements.txt
 
-EXPOSE 5000
 ENTRYPOINT ["python","main.py"]
