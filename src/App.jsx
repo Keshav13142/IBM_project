@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import SignUp from "../src/screens/Signup";
 import Alert from "./components/Alert";
 import Navbar from "./components/Navbar";
@@ -28,7 +28,7 @@ function App() {
     });
   }, []);
   return (
-    <BrowserRouter>
+    <HashRouter>
       <AppProvider>
         <Navbar />
         <Alert />
@@ -39,7 +39,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
         </Routes>
       </AppProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
