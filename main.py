@@ -1,9 +1,9 @@
 from backend import create_app
-from dotenv import dotenv_values
+import os
 
 app = create_app()
 
-port = dotenv_values(".env")["PORT"]
+port = os.environ.get("PORT", 5000)
 
 
 if __name__ == '__main__':
