@@ -28,7 +28,9 @@ module.exports = asyncHandler(async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     //Get the user's ID from the token
-    const { email } = decoded;
+    const {
+      user: { email },
+    } = decoded;
 
     //Fetch the user's details from the DB excluding the password
     const user = await getUser(email);
