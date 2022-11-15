@@ -63,7 +63,7 @@ const Login = () => {
           duration: 3000,
           isClosable: true,
           variant: "left-accent",
-          position: "top-right",
+          position: "top",
         });
         return;
       }
@@ -74,7 +74,7 @@ const Login = () => {
         duration: 3000,
         isClosable: true,
         variant: "left-accent",
-        position: "top-right",
+        position: "top",
       });
       localStorage.setItem("user", JSON.stringify(data));
       navigate("/dashboard");

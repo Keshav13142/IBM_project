@@ -21,7 +21,7 @@ const Navbar = () => {
       duration: 3000,
       isClosable: true,
       variant: "left-accent",
-      position: "top-right",
+      position: "top",
     });
 
     localStorage.removeItem("user");

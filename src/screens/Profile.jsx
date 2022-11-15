@@ -85,7 +85,7 @@ const Profile = () => {
         duration: 3000,
         isClosable: true,
         variant: "left-accent",
-        position: "top-right",
+        position: "top",
       });
     }
 
@@ -116,7 +116,7 @@ const Profile = () => {
         duration: 3000,
         isClosable: true,
         variant: "left-accent",
-        position: "top-right",
+        position: "top",
       });
     }
 
