@@ -50,7 +50,6 @@ const Profile = () => {
       !skills.find((item) => item.toLowerCase() === addSkill.toLowerCase())
     ) {
       setNewSkills((prev) => [...prev, addSkill.trim()]);
-
       setSkills((prev) => [...prev, addSkill.trim()]);
     }
     setAddSkill("");
