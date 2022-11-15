@@ -1,11 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import { registerUser } from "../proxies/backend_api";
 import { emailRegex } from "../utils/helper";
 
 const SignUp = () => {
-  const { setShowAlert, setUser } = useContext(AppContext);
+  const { setUser, user } = useContext(AppContext);
 
   const navigate = useNavigate();
 
@@ -89,19 +89,33 @@ const SignUp = () => {
     if (checkInputErrors()) {
       const data = await registerUser(inputs);
       if (data.error) {
-        setShowAlert({ type: "error", message: data.error, duration: 3000 });
+        toast({
+          title: data.error,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          variant: "left-accent",
+          position: "top-right",
+        });
         return;
       }
       setUser(data);
-      setShowAlert({
-        type: "success",
-        message: `Your journey starts here ${data.name}`,
+      toast({
+        title: `Your journey starts here ${data.name}`,
+        status: "success",
         duration: 3000,
+        isClosable: true,
+        variant: "left-accent",
+        position: "top-right",
       });
       localStorage.setItem("user", JSON.stringify(data));
       navigate("/profile");
     }
   };
+
+  useEffect(() => {
+    if (user) navigate("dashboard");
+  }, []);
 
   return (
     <div className="flex flex-col justify-center items-center gap-10 mt-5">

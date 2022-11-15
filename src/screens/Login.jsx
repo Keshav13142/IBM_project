@@ -1,11 +1,13 @@
-import React, { useContext, useState } from "react";
+import { useToast } from "@chakra-ui/react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import { loginUser } from "../proxies/backend_api";
 import { emailRegex } from "../utils/helper";
 
 const Login = () => {
-  const { setShowAlert, setUser } = useContext(AppContext);
+  const toast = useToast();
+  const { setUser, user } = useContext(AppContext);
 
   const navigate = useNavigate();
 
@@ -55,19 +57,33 @@ const Login = () => {
     if (checkInputErrors()) {
       const data = await loginUser(inputs);
       if (data.error) {
-        setShowAlert({ type: "error", message: data.error, duration: 3000 });
+        toast({
+          title: data.error,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          variant: "left-accent",
+          position: "top-right",
+        });
         return;
       }
       setUser(data);
-      setShowAlert({
-        type: "success",
-        message: `Welcome back ${data.name}`,
+      toast({
+        title: `Welcome back ${data.name}`,
+        status: "success",
         duration: 3000,
+        isClosable: true,
+        variant: "left-accent",
+        position: "top-right",
       });
       localStorage.setItem("user", JSON.stringify(data));
       navigate("/dashboard");
     }
   };
+
+  useEffect(() => {
+    if (user) navigate("dashboard");
+  }, []);
 
   return (
     <div className="flex flex-col justify-center items-center gap-10 mt-5">

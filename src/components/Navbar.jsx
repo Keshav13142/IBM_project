@@ -16,12 +16,12 @@ const Navbar = () => {
   return (
     <div className="navbar bg-base-100 border-b-2">
       <div className="flex-1">
-        <a
+        <Link
           className="btn btn-ghost normal-case text-xl"
-          onClick={() => navigate(user ? "/dashboard" : "/")}
+          to={user ? "/dashboard" : "/"}
         >
           F-ing Jobs
-        </a>
+        </Link>
       </div>
       {user && (
         <div className="flex-none gap-2">
