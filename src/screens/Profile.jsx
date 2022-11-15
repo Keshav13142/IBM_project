@@ -23,6 +23,7 @@ import {
 
 const Profile = () => {
   const toast = useToast();
+
   const { user, setUser, skills, setSkills } = useContext(AppContext);
 
   const [addSkill, setAddSkill] = useState("");
@@ -114,6 +115,8 @@ const Profile = () => {
         status: "info",
         duration: 3000,
         isClosable: true,
+        variant: "left-accent",
+        position: "top-right",
       });
     }
 
