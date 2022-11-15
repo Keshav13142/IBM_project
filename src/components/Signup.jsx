@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import { registerUser } from "../proxies/backend_api";
 import { emailRegex } from "../utils/helper";
 
 const SignUp = () => {
-  const { setUser, user } = useContext(AppContext);
+  const { setUser } = useContext(AppContext);
 
   const navigate = useNavigate();
 
@@ -113,12 +113,8 @@ const SignUp = () => {
     }
   };
 
-  useEffect(() => {
-    if (user) navigate("dashboard");
-  }, []);
-
   return (
-    <div className="flex flex-col justify-center items-center gap-10 mt-5">
+    <>
       <div>
         <button className="bg-base-300 rounded-box flex flex-row justify-evenly items-center gap-10 px-10 py-5 w-fit mx-auto">
           <span>Sign in with Github</span>
@@ -204,16 +200,10 @@ const SignUp = () => {
             >
               Sign Up
             </button>
-            <p>
-              Already have an account?{" "}
-              <Link className="text-blue-400" to="/">
-                Sign in
-              </Link>
-            </p>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

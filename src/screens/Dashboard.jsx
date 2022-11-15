@@ -66,9 +66,9 @@ const Dashboard = () => {
     }
   }, [user]);
 
-  // useEffect(() => {
-  //   searchWithSkills();
-  // }, [selectedSkills]);
+  useEffect(() => {
+    searchWithSkills();
+  }, [selectedSkills]);
 
   useEffect(() => {
     searchJobsFromQuery();

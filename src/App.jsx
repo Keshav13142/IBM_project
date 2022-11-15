@@ -1,10 +1,9 @@
 import { useEffect } from "react";
 import { HashRouter, Route, Routes } from "react-router-dom";
-import SignUp from "../src/screens/Signup";
 import Navbar from "./components/Navbar";
 import { AppProvider } from "./context/AppContext";
+import Auth from "./screens/Auth";
 import Dashboard from "./screens/Dashboard";
-import Login from "./screens/Login";
 import Profile from "./screens/Profile";
 
 function App() {
@@ -31,8 +30,7 @@ function App() {
       <AppProvider>
         <Navbar />
         <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
+          <Route path="/" element={<Auth />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
         </Routes>

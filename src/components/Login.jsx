@@ -1,13 +1,13 @@
 import { useToast } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import { loginUser } from "../proxies/backend_api";
 import { emailRegex } from "../utils/helper";
 
 const Login = () => {
   const toast = useToast();
-  const { setUser, user } = useContext(AppContext);
+  const { setUser } = useContext(AppContext);
 
   const navigate = useNavigate();
 
@@ -81,12 +81,8 @@ const Login = () => {
     }
   };
 
-  useEffect(() => {
-    if (user) navigate("dashboard");
-  }, []);
-
   return (
-    <div className="flex flex-col justify-center items-center gap-10 mt-5">
+    <>
       <div>
         <button className="bg-base-300 rounded-box flex flex-row justify-evenly items-center gap-10 px-10 py-5 w-fit mx-auto">
           <span>Sign in with Github</span>
@@ -135,16 +131,10 @@ const Login = () => {
             >
               Login
             </button>
-            <p>
-              Don't have an account?{" "}
-              <Link className="text-blue-400" to="/signup">
-                Sign up
-              </Link>
-            </p>
           </div>
         </form>
       </div>
-    </div>
+    </>
   );
 };
 
