@@ -123,7 +123,7 @@ const Dashboard = () => {
           ) : (
             <h2 className="text-2xl mt-5">
               Search for keywords {query}
-              {filterUsingSkills && `,${skills.join(",")}`}
+              {`,${selectedSkills.join(",")}`}
             </h2>
           )}
 
