@@ -41,7 +41,6 @@ const Dashboard = () => {
     } catch (error) {
       toast({
         title: `Trying to fetch data!!`,
-        description: "Something went wrong",
         status: "info",
         duration: 3000,
         isClosable: true,
@@ -65,7 +64,6 @@ const Dashboard = () => {
     } catch (error) {
       toast({
         title: `Trying to fetch data!!`,
-        description: "Something went wrong",
         status: "info",
         duration: 3000,
         isClosable: true,
